@@ -24,7 +24,7 @@ builds:
         - cmd: ./build/scripts/sign '{{ .Path }}'
           output: true
   - id: "kit-macos-offline"
-    flags: 
+    flags:
       - --tags=embed_harness
     env:
       - CGO_ENABLED=0
@@ -43,7 +43,7 @@ builds:
 
 archives:
   # zip archives for Mac OS:
-  #   - will be notorized 
+  #   - will be notorized
   #   - will be made available for users to install manually
   - id: kit-macos-zip-archive
     format: zip
@@ -95,3 +95,6 @@ git:
 snapshot:
   name_template: "{{ .Version }}"
 
+sboms:
+  - id: kit-sbom-darwin
+    artifacts: archive

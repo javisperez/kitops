@@ -17,7 +17,7 @@ builds:
     ldflags:
       - -s -w -X github.com/kitops-ml/kitops/pkg/lib/constants.Version={{.Version}} -X github.com/kitops-ml/kitops/pkg/lib/constants.GitCommit={{.Commit}} -X github.com/kitops-ml/kitops/pkg/lib/constants.BuildTime={{.CommitDate}}
   - id: "kit-linux-embedded"
-    flags: 
+    flags:
       - --tags=embed_harness
     env:
       - CGO_ENABLED=0
@@ -63,3 +63,7 @@ git:
 
 snapshot:
   name_template: "{{ .Version }}"
+
+sboms:
+  - id: kit-sbom-linux
+    artifacts: archive
