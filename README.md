@@ -10,7 +10,7 @@
 
 - [What is KitOps?](#what-is-kitops)
 - [KitOps Architecture](#kitops-architecture)
-- [Try KitOps](#try-kitops-in-under-15-minutes)
+- [Try KitOps](#-try-kitops-in-under-15-minutes)
 - [Benefits](#key-benefits)
 - [Community & Support](#join-kitops-community)
 
