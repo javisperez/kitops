@@ -58,6 +58,22 @@ onMounted(() => {
       }
     }
   }, 100)
+
+  // Render the HubSpot form
+  const script = document.createElement("script");
+  script.src="https://js.hsforms.net/forms/v2.js";
+  document.body.appendChild(script);
+
+  script.addEventListener("load", () => {
+    if (window.hbspt) {
+      window.hbspt.forms.create({
+        portalId: "244807631",
+        formId: "db1e95f1-fcaa-41e5-b9f6-2cead07c3806",
+        region: "na2",
+        target: "#hubspotForm"
+      })
+    }
+  })
 })
 </script>
 
@@ -168,42 +184,7 @@ onMounted(() => {
   <h2 class="text-center">stay informed About Kitops</h2>
 
   <div class="text-center max-w-[600px] mx-auto mt-12">
-    <template v-if="!isSuccess">
-      <form @submit.prevent="subscribeToNewsletter" class="flex flex-col md:flex-row gap-10 lg:gap-4">
-        <input required
-          :disabled="isBusy"
-          id="email"
-          type="email"
-          pattern="^[a-zA-Z0-9]+([._+\-][a-zA-Z0-9]+)*@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"
-          name="email"
-          placeholder="you@example.com"
-          class="input"
-          v-model="email"
-          style="border: 1px solid var(--color-off-white)" />
-
-        <input
-          type="text"
-          id="favoriteDevOpsTool"
-          placeholder="What's your favorite devops tool?"
-          name="favoriteDevOpsTool"
-          v-model="favoriteDevOpsTool"
-          class="hidden" />
-
-        <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center mx-auto">
-          JOIN THE LIST
-        </button>
-      </form>
-
-      <div v-if="isProd" class="mt-10">
-        <vue-turnstile site-key="0x4AAAAAAA1WT4LYaVrBtAD7" v-model="token" />
-      </div>
-
-      <p v-if="error" class="text-red-500 mt-6">{{ error }}</p>
-    </template>
-
-    <template v-else>
-      <p class="mt-12">You are now subscribed to the newsletter.</p>
-    </template>
+    <div id="hubspotForm" class="space-y-5"></div>
   </div>
 </div>
 
@@ -629,8 +610,25 @@ onMounted(() => {
 <!-- Our custom home styles -->
 <style scoped src="@theme/assets/css/home.css"></style>
 
-<style scoped>
-.input {
+<style>
+.grecaptcha-badge {
+  margin-inline: auto;
+}
+.hs-form > * {
+  margin-top: 12px;
+}
+
+.hs-form-field {
+  text-align: left;
+}
+
+.hs-error-msg {
+  color: var(--color-red-500);
+  margin-top: 4px;
+  font-size: 0.875rem;
+}
+
+.hs-input {
   display: block;
   border: 1px solid var(--color-off-white);
   color: var(--color-off-white);
