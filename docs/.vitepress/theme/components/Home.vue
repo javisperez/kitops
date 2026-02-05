@@ -1,47 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { Vue3Marquee } from 'vue3-marquee'
-import axios from 'axios'
-import VueTurnstile from 'vue-turnstile'
 import Accordion from './Accordion.vue'
 
-const error = ref('')
-const email = ref('')
-const token = ref('')
-const favoriteDevOpsTool = ref('')
-const isBusy = ref(false)
 const isSubscribed = ref(false)
-const isSuccess = ref(false)
-const isProd = import.meta.env.PROD
 
-const subscribeToNewsletter = async () => {
-  isBusy.value = true
-
-  // Validate the captcha token with the server
-  try {
-    await axios.post('https://newsprxy.gorkem.workers.dev/', {
-      email: email.value,
-      userGroup: 'KitOps',
-      formName: 'KitOps-Community',
-      favoriteDevOpsTool: favoriteDevOpsTool.value
-    }, {
-      headers: {
-        'cf-turnstile-response': token.value,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Expect': '',
-      }
-    })
-
-    isSuccess.value = true
-    localStorage.setItem('subscribed', 'true')
-  }
-  catch(err: any) {
-    error.value = err.response?.data?.errors?.flatMap((e: Error) => e.message)[0] || 'An unknown error occurred'
-  }
-  finally {
-    isBusy.value = false
-  }
-}
+let hubspotScript: HTMLScriptElement | null = null;
 
 onMounted(() => {
   isSubscribed.value = localStorage.getItem('subscribed') === 'true'
@@ -61,19 +25,31 @@ onMounted(() => {
 
   // Render the HubSpot form
   const script = document.createElement("script");
-  script.src="https://js.hsforms.net/forms/v2.js";
+  script.src = "https://js.hsforms.net/forms/v2.js";
   document.body.appendChild(script);
 
-  script.addEventListener("load", () => {
-    if (window.hbspt) {
-      window.hbspt.forms.create({
-        portalId: "244807631",
-        formId: "db1e95f1-fcaa-41e5-b9f6-2cead07c3806",
-        region: "na2",
-        target: "#hubspotForm"
-      })
-    }
-  })
+  script.addEventListener("load", onHubSpotLoad);
+  hubspotScript = script;
+})
+
+const onHubSpotLoad = () => {
+  if (window.hbspt) {
+    window.hbspt.forms.create({
+      portalId: "244807631",
+      formId: "db1e95f1-fcaa-41e5-b9f6-2cead07c3806",
+      region: "na2",
+      target: "#hubspotForm"
+    });
+  }
+};
+
+onUnmounted(() => {
+  if (hubspotScript) {
+    console.log('removing hubspot script');
+    hubspotScript.removeEventListener("load", onHubSpotLoad);
+    hubspotScript.remove();
+    hubspotScript = null;
+  }
 })
 </script>
 
